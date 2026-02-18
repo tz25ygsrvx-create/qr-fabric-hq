@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
-import { mockSKUs, mockLocations, getLocationLabel } from '@/data/mockData';
+import { mockLocations, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const AddRollPage = () => {
   const navigate = useNavigate();
+  const store = useWarehouseStore();
   const [rollId, setRollId] = useState('');
   const [skuCode, setSkuCode] = useState('');
   const [metersInitial, setMetersInitial] = useState('');
@@ -17,6 +20,26 @@ const AddRollPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const meters = parseFloat(metersInitial);
+    if (isNaN(meters) || meters <= 0) {
+      toast({ title: 'Klaida', description: 'Įveskite teisingą metrų kiekį', variant: 'destructive' });
+      return;
+    }
+    if (store.getRollById(rollId.trim())) {
+      toast({ title: 'Klaida', description: `Rulonas „${rollId}" jau egzistuoja`, variant: 'destructive' });
+      return;
+    }
+    store.addRoll({
+      roll_id: rollId.trim(),
+      sku_code: skuCode,
+      qr_code_value: `QR-${rollId.trim()}`,
+      meters_initial: meters,
+      meters_remaining: meters,
+      location_id: locationId,
+      status: 'ACTIVE',
+      received_date: new Date().toISOString().slice(0, 10),
+      supplier: supplier || undefined,
+    });
     setSubmitted(true);
   };
 
@@ -53,7 +76,7 @@ const AddRollPage = () => {
             required
           >
             <option value="">Pasirinkite audinį...</option>
-            {mockSKUs.map(sku => (
+            {store.getSKUs().map(sku => (
               <option key={sku.sku_code} value={sku.sku_code}>{sku.sku_code} — {sku.name}</option>
             ))}
           </select>
