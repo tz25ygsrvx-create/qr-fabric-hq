@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import { ScanLine, Keyboard } from 'lucide-react';
-import { getRollByQR, getRollById } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -11,10 +11,11 @@ const ScanPage = () => {
   const [mode, setMode] = useState<'scan' | 'manual'>('scan');
   const [manualInput, setManualInput] = useState('');
   const [error, setError] = useState('');
+  const warehouse = useWarehouseStore();
 
   const handleLookup = (value: string) => {
     setError('');
-    const roll = getRollByQR(value) || getRollById(value);
+    const roll = warehouse.getRollByQR(value) || warehouse.getRollById(value);
     if (roll) {
       navigate(`/roll/${roll.roll_id}`);
     } else {

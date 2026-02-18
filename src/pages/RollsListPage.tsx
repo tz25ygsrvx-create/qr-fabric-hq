@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import StatusBadge from '@/components/StatusBadge';
-import { mockRolls, getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
+import { getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const RollsListPage = () => {
   const navigate = useNavigate();
+  const warehouse = useWarehouseStore();
 
   return (
     <MobileLayout title="Visi rulonai" showBack>
       <div className="px-4 py-4 space-y-2">
-        {mockRolls.map(roll => {
+        {warehouse.rolls.map(roll => {
           const sku = getSKUByCode(roll.sku_code);
           const loc = getLocationById(roll.location_id);
           return (

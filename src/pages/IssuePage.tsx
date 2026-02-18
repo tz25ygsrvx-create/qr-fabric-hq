@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import MetersDisplay from '@/components/MetersDisplay';
-import { getRollById, getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
+import { getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle } from 'lucide-react';
@@ -10,15 +11,16 @@ import { AlertCircle, CheckCircle } from 'lucide-react';
 const IssuePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const rollId = searchParams.get('roll') || '';
-  const [inputRollId, setInputRollId] = useState(rollId);
+  const rollIdParam = searchParams.get('roll') || '';
+  const [inputRollId, setInputRollId] = useState(rollIdParam);
   const [meters, setMeters] = useState('');
   const [orderNo, setOrderNo] = useState('');
   const [issueType, setIssueType] = useState<'meters' | 'roll'>('meters');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const warehouse = useWarehouseStore();
 
-  const roll = getRollById(inputRollId);
+  const roll = warehouse.getRollById(inputRollId);
   const sku = roll ? getSKUByCode(roll.sku_code) : null;
   const location = roll ? getLocationById(roll.location_id) : null;
 
@@ -34,6 +36,11 @@ const IssuePage = () => {
         setError(`Nepakanka likučio: turite ${roll.meters_remaining.toFixed(2)} m, bandote ${qty.toFixed(2)} m`);
         return;
       }
+      const ok = warehouse.issueMeters(roll.roll_id, qty, orderNo || undefined);
+      if (!ok) { setError('Klaida nurašant'); return; }
+    } else {
+      const ok = warehouse.issueWholeRoll(roll.roll_id, orderNo || undefined);
+      if (!ok) { setError('Klaida nurašant ruloną'); return; }
     }
 
     setSubmitted(true);

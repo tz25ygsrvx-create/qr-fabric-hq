@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import { ScanLine, Minus, Plus, Search, Package, MapPin, BarChart3 } from 'lucide-react';
-import { mockRolls, mockSKUs } from '@/data/mockData';
+import { mockSKUs } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const warehouse = useWarehouseStore();
 
-  const activeRolls = mockRolls.filter(r => r.status === 'ACTIVE').length;
-  const reservedRolls = mockRolls.filter(r => r.status === 'RESERVED').length;
-  const totalMeters = mockRolls.filter(r => r.status !== 'CONSUMED').reduce((sum, r) => sum + r.meters_remaining, 0);
+  const activeRolls = warehouse.rolls.filter(r => r.status === 'ACTIVE').length;
+  const reservedRolls = warehouse.rolls.filter(r => r.status === 'RESERVED').length;
+  const totalMeters = warehouse.rolls.filter(r => r.status !== 'CONSUMED').reduce((sum, r) => sum + r.meters_remaining, 0);
   const skuCount = mockSKUs.length;
 
   const mainActions = [
