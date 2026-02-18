@@ -84,22 +84,36 @@ const IssuePage = () => {
         </div>
 
         {/* Roll Info */}
-        {roll && (
-          <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-            <div className="flex justify-between">
-              <div>
-                <p className="font-bold">{sku?.name || roll.sku_code}</p>
-                <p className="text-sm text-muted-foreground">{location ? getLocationLabel(location) : '—'}</p>
+        {roll && (() => {
+          const skuRolls = warehouse.rolls.filter(r => r.sku_code === roll.sku_code && r.status !== 'CONSUMED');
+          const skuTotalMeters = skuRolls.reduce((s, r) => s + r.meters_remaining, 0);
+          return (
+            <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+              <div className="flex justify-between">
+                <div>
+                  <p className="font-bold">{sku?.name || roll.sku_code}</p>
+                  <p className="text-sm text-muted-foreground">{location ? getLocationLabel(location) : '—'}</p>
+                </div>
+                <MetersDisplay meters={roll.meters_remaining} label="Šio rulono likutis" />
               </div>
-              <MetersDisplay meters={roll.meters_remaining} label="Likutis" />
+              <div className="flex gap-4 pt-2 border-t border-border text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground">Viso rulonų (SKU)</p>
+                  <p className="font-mono font-bold text-lg">{skuRolls.length}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Viso metrų (SKU)</p>
+                  <p className="font-mono font-bold text-lg">{skuTotalMeters.toFixed(2)} <span className="text-xs text-muted-foreground">m</span></p>
+                </div>
+              </div>
+              {roll.status === 'RESERVED' && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-2">
+                  <p className="text-xs text-primary font-medium">⚠ Rezervuotas: {roll.reserved_for_order}</p>
+                </div>
+              )}
             </div>
-            {roll.status === 'RESERVED' && (
-              <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-2">
-                <p className="text-xs text-primary font-medium">⚠ Rezervuotas: {roll.reserved_for_order}</p>
-              </div>
-            )}
-          </div>
-        )}
+          );
+        })()}
 
         {/* Meters input */}
         {issueType === 'meters' && (
