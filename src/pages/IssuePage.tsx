@@ -56,8 +56,8 @@ const IssuePage = () => {
             {issueType === 'meters' ? `${meters} m nurašyta iš ${inputRollId}` : `Visas rulonas ${inputRollId} nurašytas`}
           </p>
           <div className="flex gap-3 w-full max-w-sm">
-            <Button variant="outline" className="flex-1" onClick={() => navigate('/')}>Pradžia</Button>
-            <Button className="flex-1" onClick={() => navigate('/scan')}>Scan kitą</Button>
+            <Button variant="outline" className="flex-1" onClick={() => navigate(`/roll/${inputRollId}`)}>Grįžti į ruloną</Button>
+            <Button className="flex-1" onClick={() => { setSubmitted(false); setMeters(''); setOrderNo(''); setError(''); }}>Nurašyti dar</Button>
           </div>
         </div>
       </MobileLayout>
