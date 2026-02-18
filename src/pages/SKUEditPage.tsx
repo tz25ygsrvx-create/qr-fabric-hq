@@ -11,7 +11,7 @@ const SKUEditPage = () => {
   const { skuCode } = useParams<{ skuCode: string }>();
   const navigate = useNavigate();
   const store = useWarehouseStore();
-  const isNew = skuCode === 'new';
+  const isNew = !skuCode || skuCode === 'new';
   const existing = isNew ? null : store.getSKUByCode(skuCode || '');
 
   const [form, setForm] = useState({
