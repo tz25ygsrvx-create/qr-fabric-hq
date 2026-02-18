@@ -30,6 +30,7 @@ const App = () => (
           <Route path="/scan" element={<ScanPage />} />
           <Route path="/roll/:rollId" element={<RollDetail />} />
           <Route path="/sku" element={<SKUList />} />
+          <Route path="/sku/new" element={<SKUEditPage />} />
           <Route path="/sku/:skuCode" element={<SKUDetail />} />
           <Route path="/sku/:skuCode/edit" element={<SKUEditPage />} />
           <Route path="/issue" element={<IssuePage />} />
