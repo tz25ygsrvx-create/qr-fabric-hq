@@ -11,6 +11,7 @@ import SKUList from "./pages/SKUList";
 import SKUDetail from "./pages/SKUDetail";
 import IssuePage from "./pages/IssuePage";
 import AddRollPage from "./pages/AddRollPage";
+import SKUEditPage from "./pages/SKUEditPage";
 import MovePage from "./pages/MovePage";
 import RollsListPage from "./pages/RollsListPage";
 import LocationsPage from "./pages/LocationsPage";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/roll/:rollId" element={<RollDetail />} />
           <Route path="/sku" element={<SKUList />} />
           <Route path="/sku/:skuCode" element={<SKUDetail />} />
+          <Route path="/sku/:skuCode/edit" element={<SKUEditPage />} />
           <Route path="/issue" element={<IssuePage />} />
           <Route path="/add-roll" element={<AddRollPage />} />
           <Route path="/move" element={<MovePage />} />

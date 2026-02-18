@@ -2,31 +2,40 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import { mockSKUs } from '@/data/mockData';
-import { mockRolls } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { FabricCategory } from '@/types/warehouse';
 
 const categories: (FabricCategory | 'Visos')[] = ['Visos', 'Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
 
 const SKUList = () => {
   const navigate = useNavigate();
+  const store = useWarehouseStore();
   const [search, setSearch] = useState('');
   const [selectedCat, setSelectedCat] = useState<FabricCategory | 'Visos'>('Visos');
 
-  const filtered = mockSKUs.filter(sku => {
+  const allSKUs = store.getSKUs();
+
+  const filtered = allSKUs.filter(sku => {
     const matchesSearch = !search || sku.name.toLowerCase().includes(search.toLowerCase()) || sku.sku_code.toLowerCase().includes(search.toLowerCase());
     const matchesCat = selectedCat === 'Visos' || sku.category === selectedCat;
     return matchesSearch && matchesCat;
   });
 
-  const getRollCount = (skuCode: string) => mockRolls.filter(r => r.sku_code === skuCode && r.status !== 'CONSUMED').length;
-  const getTotalMeters = (skuCode: string) => mockRolls.filter(r => r.sku_code === skuCode && r.status !== 'CONSUMED').reduce((s, r) => s + r.meters_remaining, 0);
+  const getRollCount = (skuCode: string) => store.rolls.filter(r => r.sku_code === skuCode && r.status !== 'CONSUMED').length;
+  const getTotalMeters = (skuCode: string) => store.rolls.filter(r => r.sku_code === skuCode && r.status !== 'CONSUMED').reduce((s, r) => s + r.meters_remaining, 0);
 
   return (
     <MobileLayout title="Audiniai (SKU)">
       <div className="px-4 py-4 space-y-4">
-        {/* Search */}
+        {/* Add + Search */}
+        <button
+          onClick={() => navigate('/sku/new')}
+          className="w-full bg-primary text-primary-foreground rounded-xl p-3 flex items-center justify-center gap-2 font-bold text-lg"
+        >
+          <Plus className="w-5 h-5" /> Naujas SKU
+        </button>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
