@@ -1,11 +1,14 @@
 import { FabricSKU, Roll, StockMovement } from '@/types/warehouse';
 import { mockRolls, mockMovements, mockSKUs } from './mockData';
 
+const DEFAULT_CATEGORIES = ['Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
+
 // Mutable in-memory store (singleton)
 class WarehouseStore {
   rolls: Roll[];
   movements: StockMovement[];
   skus: FabricSKU[];
+  categories: string[];
   version = 0;
   private listeners: Set<() => void> = new Set();
 
@@ -13,6 +16,7 @@ class WarehouseStore {
     this.rolls = mockRolls.map(r => ({ ...r }));
     this.movements = mockMovements.map(m => ({ ...m }));
     this.skus = mockSKUs.map(s => ({ ...s }));
+    this.categories = [...DEFAULT_CATEGORIES];
   }
 
   subscribe(listener: () => void): () => void {
@@ -125,6 +129,36 @@ class WarehouseStore {
     const hasRolls = this.rolls.some(r => r.sku_code === skuCode);
     if (hasRolls) return false;
     this.skus = this.skus.filter(s => s.sku_code !== skuCode);
+    this.notify();
+    return true;
+  }
+
+  // Category methods
+  getCategories() { return this.categories; }
+
+  addCategory(name: string) {
+    const trimmed = name.trim();
+    if (!trimmed || this.categories.includes(trimmed)) return false;
+    this.categories.push(trimmed);
+    this.notify();
+    return true;
+  }
+
+  renameCategory(oldName: string, newName: string) {
+    const trimmed = newName.trim();
+    if (!trimmed || this.categories.includes(trimmed)) return false;
+    const idx = this.categories.indexOf(oldName);
+    if (idx === -1) return false;
+    this.categories[idx] = trimmed;
+    this.skus.filter(s => s.category === oldName).forEach(s => { s.category = trimmed; });
+    this.notify();
+    return true;
+  }
+
+  deleteCategory(name: string) {
+    const hasSkus = this.skus.some(s => s.category === name);
+    if (hasSkus) return false;
+    this.categories = this.categories.filter(c => c !== name);
     this.notify();
     return true;
   }

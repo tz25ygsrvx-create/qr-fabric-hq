@@ -5,8 +5,7 @@ import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
 import { FabricCategory, FabricSKU } from '@/types/warehouse';
 import { toast } from '@/hooks/use-toast';
-
-const categories: FabricCategory[] = ['Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
+import { Plus } from 'lucide-react';
 
 const SKUEditPage = () => {
   const { skuCode } = useParams<{ skuCode: string }>();
@@ -108,7 +107,7 @@ const SKUEditPage = () => {
           <div>
             <label className="text-xs text-muted-foreground font-medium">Kategorija</label>
             <div className="flex gap-2 flex-wrap mt-1">
-              {categories.map(cat => (
+              {store.getCategories().map(cat => (
                 <button
                   key={cat}
                   type="button"
@@ -120,6 +119,10 @@ const SKUEditPage = () => {
                   {cat}
                 </button>
               ))}
+              <AddCategoryInline onAdd={(name) => {
+                store.addCategory(name);
+                set('category', name);
+              }} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -147,6 +150,53 @@ const SKUEditPage = () => {
         </button>
       </div>
     </MobileLayout>
+  );
+};
+// Inline component to add a new category
+const AddCategoryInline = ({ onAdd }: { onAdd: (name: string) => void }) => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="px-3 py-1.5 rounded-full text-sm font-medium border-2 border-dashed border-primary/40 text-primary flex items-center gap-1 hover:bg-primary/10 transition-colors"
+      >
+        <Plus className="w-3.5 h-3.5" /> Nauja
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <Input
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder="Kategorija..."
+        className="h-8 w-32 text-sm"
+        autoFocus
+        onKeyDown={e => {
+          if (e.key === 'Enter' && value.trim()) { onAdd(value.trim()); setOpen(false); setValue(''); }
+          if (e.key === 'Escape') { setOpen(false); setValue(''); }
+        }}
+      />
+      <button
+        type="button"
+        onClick={() => { if (value.trim()) { onAdd(value.trim()); setOpen(false); setValue(''); } }}
+        className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold"
+      >
+        ✓
+      </button>
+      <button
+        type="button"
+        onClick={() => { setOpen(false); setValue(''); }}
+        className="px-2 py-1 rounded-lg bg-muted text-muted-foreground text-xs"
+      >
+        ✕
+      </button>
+    </div>
   );
 };
 

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Plus } from 'lucide-react';
 import { FabricCategory } from '@/types/warehouse';
 
-const categories: (FabricCategory | 'Visos')[] = ['Visos', 'Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
+
 
 const SKUList = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const SKUList = () => {
   const [selectedCat, setSelectedCat] = useState<FabricCategory | 'Visos'>('Visos');
 
   const allSKUs = store.getSKUs();
+  const categories: string[] = ['Visos', ...store.getCategories()];
 
   const filtered = allSKUs.filter(sku => {
     const matchesSearch = !search || sku.name.toLowerCase().includes(search.toLowerCase()) || sku.sku_code.toLowerCase().includes(search.toLowerCase());

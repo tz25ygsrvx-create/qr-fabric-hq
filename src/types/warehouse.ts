@@ -1,4 +1,4 @@
-export type FabricCategory = 'Dieniniai' | 'Naktiniai' | 'Blackout' | 'Tinkleliai' | 'Romanetės' | 'Kita';
+export type FabricCategory = string;
 export type RollStatus = 'ACTIVE' | 'RESERVED' | 'CONSUMED';
 export type MovementType = 'ADD_ROLL' | 'ADD_METERS' | 'ISSUE_METERS' | 'ISSUE_ROLL' | 'MOVE' | 'ADJUST' | 'RETURN' | 'RESERVE' | 'UNRESERVE';
 export type UserRole = 'Admin' | 'Sandėlininkas' | 'Peržiūra';
