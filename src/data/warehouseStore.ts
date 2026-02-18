@@ -70,6 +70,17 @@ class WarehouseStore {
     this.notify();
   }
 
+  addMeters(rollId: string, qty: number, note?: string) {
+    const roll = this.getRollById(rollId);
+    if (!roll || qty <= 0) return false;
+    roll.meters_remaining = parseFloat((roll.meters_remaining + qty).toFixed(2));
+    roll.meters_initial = parseFloat((roll.meters_initial + qty).toFixed(2));
+    if (roll.status === 'CONSUMED') roll.status = 'ACTIVE';
+    this.addMovement('ADD_METERS', rollId, roll.sku_code, qty, undefined, undefined, undefined, note);
+    this.notify();
+    return true;
+  }
+
   reserveRoll(rollId: string, orderNo: string) {
     const roll = this.getRollById(rollId);
     if (!roll || roll.status !== 'ACTIVE') return false;

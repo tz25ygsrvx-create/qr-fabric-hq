@@ -5,7 +5,8 @@ import StatusBadge from '@/components/StatusBadge';
 import MetersDisplay from '@/components/MetersDisplay';
 import { getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
-import { Minus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera } from 'lucide-react';
+import { Minus, Plus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -14,6 +15,9 @@ const RollDetail = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [addMetersOpen, setAddMetersOpen] = useState(false);
+  const [addMetersQty, setAddMetersQty] = useState('');
+  const [addMetersNote, setAddMetersNote] = useState('');
   const warehouse = useWarehouseStore();
 
   const roll = warehouse.getRollById(rollId || '');
@@ -62,7 +66,25 @@ const RollDetail = () => {
     toast.info('Etiketės spausdinimas paruoštas');
   };
 
+  const handleAddMeters = () => {
+    const qty = parseFloat(addMetersQty);
+    if (isNaN(qty) || qty <= 0) {
+      toast.error('Įveskite teisingą metrų kiekį');
+      return;
+    }
+    const ok = warehouse.addMeters(roll.roll_id, qty, addMetersNote || undefined);
+    if (ok) {
+      toast.success(`+${qty.toFixed(2)} m pridėta prie ${roll.roll_id}`);
+      setAddMetersOpen(false);
+      setAddMetersQty('');
+      setAddMetersNote('');
+    } else {
+      toast.error('Nepavyko pridėti metrų');
+    }
+  };
+
   const actions = [
+    { icon: Plus, label: 'Pridėti metrų', onClick: () => setAddMetersOpen(true), disabled: false },
     { icon: Minus, label: 'Nurašyti metrus', onClick: () => navigate(`/issue?roll=${roll.roll_id}`), disabled: roll.status === 'CONSUMED' },
     { icon: Minus, label: 'Nurašyti visą', onClick: handleIssueWholeRoll, disabled: roll.status === 'CONSUMED' },
     { icon: ArrowRightLeft, label: 'Perkelti', onClick: () => navigate(`/move?roll=${roll.roll_id}`), disabled: roll.status === 'CONSUMED' },
@@ -158,6 +180,38 @@ const RollDetail = () => {
             </button>
           ))}
         </div>
+
+        {/* Add Meters Form */}
+        {addMetersOpen && (
+          <div className="bg-card border-2 border-primary rounded-2xl p-4 space-y-3">
+            <h3 className="font-bold text-sm">Pridėti metrų prie {roll.roll_id}</h3>
+            <div>
+              <label className="text-xs text-muted-foreground">Kiekis (m) *</label>
+              <Input
+                type="number"
+                step="0.01"
+                value={addMetersQty}
+                onChange={e => setAddMetersQty(e.target.value)}
+                placeholder="0.00"
+                className="h-14 font-mono text-2xl text-center"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Pastaba</label>
+              <Input
+                value={addMetersNote}
+                onChange={e => setAddMetersNote(e.target.value)}
+                placeholder="Korekcija, grąžinimas..."
+                className="h-12"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => { setAddMetersOpen(false); setAddMetersQty(''); setAddMetersNote(''); }}>Atšaukti</Button>
+              <Button className="flex-1" onClick={handleAddMeters}>+ Pridėti</Button>
+            </div>
+          </div>
+        )}
 
         {/* Hidden file input for photo upload */}
         <input
