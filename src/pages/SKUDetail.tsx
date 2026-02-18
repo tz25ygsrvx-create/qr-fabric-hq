@@ -3,7 +3,7 @@ import MobileLayout from '@/components/MobileLayout';
 import StatusBadge from '@/components/StatusBadge';
 import { getLocationById, getLocationLabel } from '@/data/mockData';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Plus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const SKUDetail = () => {
@@ -63,8 +63,16 @@ const SKUDetail = () => {
           </div>
         </div>
 
-        {/* Rolls */}
-        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Rulonai</h3>
+        {/* Add Roll + Rolls Header */}
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Rulonai ({rolls.length})</h3>
+          <button
+            onClick={() => navigate(`/add-roll?sku=${sku.sku_code}`)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-bold"
+          >
+            <Plus className="w-4 h-4" /> Pridėti ruloną
+          </button>
+        </div>
         <div className="space-y-2">
           {rolls.map(roll => {
             const loc = getLocationById(roll.location_id);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import { mockLocations, getLocationLabel } from '@/data/mockData';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
@@ -10,9 +10,10 @@ import { toast } from '@/hooks/use-toast';
 
 const AddRollPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const store = useWarehouseStore();
   const [rollId, setRollId] = useState('');
-  const [skuCode, setSkuCode] = useState('');
+  const [skuCode, setSkuCode] = useState(searchParams.get('sku') || '');
   const [metersInitial, setMetersInitial] = useState('');
   const [locationId, setLocationId] = useState('');
   const [supplier, setSupplier] = useState('');
@@ -51,7 +52,7 @@ const AddRollPage = () => {
           <p className="text-xl font-bold">Rulonas pridėtas!</p>
           <p className="text-muted-foreground font-mono">{rollId}</p>
           <div className="flex gap-3 w-full max-w-sm">
-            <Button variant="outline" className="flex-1" onClick={() => navigate('/')}>Pradžia</Button>
+            <Button variant="outline" className="flex-1" onClick={() => skuCode ? navigate(`/sku/${skuCode}`) : navigate('/')}>Grįžti</Button>
             <Button className="flex-1" onClick={() => { setSubmitted(false); setRollId(''); setMetersInitial(''); }}>Dar vienas</Button>
           </div>
         </div>
