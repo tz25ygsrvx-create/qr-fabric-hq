@@ -1,16 +1,18 @@
-import { Roll, StockMovement } from '@/types/warehouse';
-import { mockRolls, mockMovements } from './mockData';
+import { FabricSKU, Roll, StockMovement } from '@/types/warehouse';
+import { mockRolls, mockMovements, mockSKUs } from './mockData';
 
 // Mutable in-memory store (singleton)
 class WarehouseStore {
   rolls: Roll[];
   movements: StockMovement[];
+  skus: FabricSKU[];
   version = 0;
   private listeners: Set<() => void> = new Set();
 
   constructor() {
     this.rolls = mockRolls.map(r => ({ ...r }));
     this.movements = mockMovements.map(m => ({ ...m }));
+    this.skus = mockSKUs.map(s => ({ ...s }));
   }
 
   subscribe(listener: () => void): () => void {
@@ -84,6 +86,34 @@ class WarehouseStore {
     roll.status = 'ACTIVE';
     roll.reserved_for_order = undefined;
     this.addMovement('UNRESERVE', rollId, roll.sku_code, 0);
+    this.notify();
+    return true;
+  }
+
+  // SKU methods
+  getSKUs() { return this.skus; }
+
+  getSKUByCode(code: string) { return this.skus.find(s => s.sku_code === code); }
+
+  addSKU(sku: FabricSKU) {
+    if (this.skus.find(s => s.sku_code === sku.sku_code)) return false;
+    this.skus.push(sku);
+    this.notify();
+    return true;
+  }
+
+  updateSKU(skuCode: string, updates: Partial<FabricSKU>) {
+    const sku = this.getSKUByCode(skuCode);
+    if (!sku) return false;
+    Object.assign(sku, updates);
+    this.notify();
+    return true;
+  }
+
+  deleteSKU(skuCode: string) {
+    const hasRolls = this.rolls.some(r => r.sku_code === skuCode);
+    if (hasRolls) return false;
+    this.skus = this.skus.filter(s => s.sku_code !== skuCode);
     this.notify();
     return true;
   }

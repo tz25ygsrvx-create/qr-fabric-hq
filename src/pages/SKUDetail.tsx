@@ -1,12 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import StatusBadge from '@/components/StatusBadge';
-import { getSKUByCode, mockRolls, getLocationById, getLocationLabel } from '@/data/mockData';
+import { getLocationById, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
+import { Pencil, Trash2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const SKUDetail = () => {
   const { skuCode } = useParams<{ skuCode: string }>();
   const navigate = useNavigate();
-  const sku = getSKUByCode(skuCode || '');
+  const store = useWarehouseStore();
+  const sku = store.getSKUByCode(skuCode || '');
 
   if (!sku) {
     return (
@@ -16,18 +20,36 @@ const SKUDetail = () => {
     );
   }
 
-  const rolls = mockRolls.filter(r => r.sku_code === sku.sku_code);
+  const rolls = store.rolls.filter(r => r.sku_code === sku.sku_code);
   const activeRolls = rolls.filter(r => r.status !== 'CONSUMED');
   const totalMeters = activeRolls.reduce((s, r) => s + r.meters_remaining, 0);
+
+  const handleDelete = () => {
+    if (rolls.length > 0) {
+      toast({ title: 'Negalima ištrinti', description: `SKU turi ${rolls.length} rulon(ų). Pirmiausia pašalinkite rulonus.`, variant: 'destructive' });
+      return;
+    }
+    if (confirm('Ar tikrai norite ištrinti šį SKU?')) {
+      store.deleteSKU(sku.sku_code);
+      toast({ title: 'SKU ištrintas' });
+      navigate('/sku');
+    }
+  };
 
   return (
     <MobileLayout title={sku.name} showBack>
       <div className="px-4 py-4 space-y-4">
         {/* Info */}
         <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
-          <div>
-            <p className="font-mono text-sm text-muted-foreground">{sku.sku_code}</p>
-            <h2 className="text-xl font-bold">{sku.name}</h2>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="font-mono text-sm text-muted-foreground">{sku.sku_code}</p>
+              <h2 className="text-xl font-bold">{sku.name}</h2>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => navigate(`/sku/${sku.sku_code}/edit`)} className="p-2 rounded-lg bg-secondary text-foreground"><Pencil className="w-5 h-5" /></button>
+              <button onClick={handleDelete} className="p-2 rounded-lg bg-destructive/10 text-destructive"><Trash2 className="w-5 h-5" /></button>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div><p className="text-xs text-muted-foreground">Kategorija</p><p className="font-medium">{sku.category}</p></div>
