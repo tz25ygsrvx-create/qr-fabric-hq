@@ -1,14 +1,18 @@
+import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import StatusBadge from '@/components/StatusBadge';
 import MetersDisplay from '@/components/MetersDisplay';
 import { getRollById, getSKUByCode, getLocationById, getLocationLabel, mockMovements } from '@/data/mockData';
-import { Minus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera } from 'lucide-react';
+import { Minus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const RollDetail = () => {
   const { rollId } = useParams<{ rollId: string }>();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const roll = getRollById(rollId || '');
   if (!roll) {
@@ -27,13 +31,34 @@ const RollDetail = () => {
 
   const usedPercent = roll.meters_initial > 0 ? ((roll.meters_initial - roll.meters_remaining) / roll.meters_initial) * 100 : 0;
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setPhotos(prev => [...prev, url]);
+      toast.success('Nuotrauka įkelta!');
+    }
+  };
+
+  const handleIssueWholeRoll = () => {
+    toast.success(`Rulonas ${roll.roll_id} nurašytas (${roll.meters_remaining.toFixed(2)} m)`);
+  };
+
+  const handleReserve = () => {
+    toast.success(roll.status === 'RESERVED' ? 'Rezervacija nuimta' : `Rulonas ${roll.roll_id} rezervuotas`);
+  };
+
+  const handlePrint = () => {
+    toast.info('Etiketės spausdinimas paruoštas');
+  };
+
   const actions = [
     { icon: Minus, label: 'Nurašyti metrus', onClick: () => navigate(`/issue?roll=${roll.roll_id}`), disabled: roll.status === 'CONSUMED' },
-    { icon: Minus, label: 'Nurašyti visą', onClick: () => {}, disabled: roll.status === 'CONSUMED' },
+    { icon: Minus, label: 'Nurašyti visą', onClick: handleIssueWholeRoll, disabled: roll.status === 'CONSUMED' },
     { icon: ArrowRightLeft, label: 'Perkelti', onClick: () => navigate(`/move?roll=${roll.roll_id}`), disabled: roll.status === 'CONSUMED' },
-    { icon: roll.status === 'RESERVED' ? BookmarkX : Bookmark, label: roll.status === 'RESERVED' ? 'Nuimti rezerv.' : 'Rezervuoti', onClick: () => {}, disabled: roll.status === 'CONSUMED' },
-    { icon: Printer, label: 'Spausdinti etiketę', onClick: () => {} },
-    { icon: Camera, label: 'Nuotrauka', onClick: () => {} },
+    { icon: roll.status === 'RESERVED' ? BookmarkX : Bookmark, label: roll.status === 'RESERVED' ? 'Nuimti rezerv.' : 'Rezervuoti', onClick: handleReserve, disabled: roll.status === 'CONSUMED' },
+    { icon: Printer, label: 'Spausdinti etiketę', onClick: handlePrint },
+    { icon: Camera, label: 'Nuotrauka', onClick: () => fileInputRef.current?.click() },
   ];
 
   return (
@@ -143,6 +168,27 @@ const RollDetail = () => {
                     </span>
                   )}
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Hidden file input for photo upload */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={handlePhotoUpload}
+        />
+
+        {/* Uploaded Photos */}
+        {photos.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-2 text-muted-foreground uppercase tracking-wider">Nuotraukos</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {photos.map((photo, i) => (
+                <img key={i} src={photo} alt={`Rulono nuotrauka ${i + 1}`} className="w-full aspect-square object-cover rounded-lg border border-border" />
               ))}
             </div>
           </div>
