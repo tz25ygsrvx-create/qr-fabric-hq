@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import StatusBadge from '@/components/StatusBadge';
 import MetersDisplay from '@/components/MetersDisplay';
-import { getRollById, getSKUByCode, getLocationById, getLocationLabel, mockMovements } from '@/data/mockData';
-import { Minus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera, CheckCircle } from 'lucide-react';
+import { getSKUByCode, getLocationById, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
+import { Minus, ArrowRightLeft, Bookmark, BookmarkX, Printer, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -13,8 +14,9 @@ const RollDetail = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>([]);
+  const warehouse = useWarehouseStore();
 
-  const roll = getRollById(rollId || '');
+  const roll = warehouse.getRollById(rollId || '');
   if (!roll) {
     return (
       <MobileLayout title="Rulonas nerastas" showBack>
@@ -27,7 +29,7 @@ const RollDetail = () => {
 
   const sku = getSKUByCode(roll.sku_code);
   const location = getLocationById(roll.location_id);
-  const movements = mockMovements.filter(m => m.roll_id === roll.roll_id).sort((a, b) => b.datetime.localeCompare(a.datetime));
+  const movements = warehouse.movements.filter(m => m.roll_id === roll.roll_id).sort((a, b) => b.datetime.localeCompare(a.datetime));
 
   const usedPercent = roll.meters_initial > 0 ? ((roll.meters_initial - roll.meters_remaining) / roll.meters_initial) * 100 : 0;
 
@@ -41,11 +43,19 @@ const RollDetail = () => {
   };
 
   const handleIssueWholeRoll = () => {
-    toast.success(`Rulonas ${roll.roll_id} nurašytas (${roll.meters_remaining.toFixed(2)} m)`);
+    const ok = warehouse.issueWholeRoll(roll.roll_id);
+    if (ok) toast.success(`Rulonas ${roll.roll_id} nurašytas`);
+    else toast.error('Nepavyko nurašyti');
   };
 
   const handleReserve = () => {
-    toast.success(roll.status === 'RESERVED' ? 'Rezervacija nuimta' : `Rulonas ${roll.roll_id} rezervuotas`);
+    if (roll.status === 'RESERVED') {
+      warehouse.unreserveRoll(roll.roll_id);
+      toast.success('Rezervacija nuimta');
+    } else {
+      warehouse.reserveRoll(roll.roll_id, 'ORD-TEMP');
+      toast.success(`Rulonas ${roll.roll_id} rezervuotas`);
+    }
   };
 
   const handlePrint = () => {
@@ -149,6 +159,28 @@ const RollDetail = () => {
           ))}
         </div>
 
+        {/* Hidden file input for photo upload */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={handlePhotoUpload}
+        />
+
+        {/* Uploaded Photos */}
+        {photos.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-2 text-muted-foreground uppercase tracking-wider">Nuotraukos</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {photos.map((photo, i) => (
+                <img key={i} src={photo} alt={`Rulono nuotrauka ${i + 1}`} className="w-full aspect-square object-cover rounded-lg border border-border" />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recent Movements */}
         {movements.length > 0 && (
           <div>
@@ -168,27 +200,6 @@ const RollDetail = () => {
                     </span>
                   )}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {/* Hidden file input for photo upload */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={handlePhotoUpload}
-        />
-
-        {/* Uploaded Photos */}
-        {photos.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold mb-2 text-muted-foreground uppercase tracking-wider">Nuotraukos</h3>
-            <div className="grid grid-cols-3 gap-2">
-              {photos.map((photo, i) => (
-                <img key={i} src={photo} alt={`Rulono nuotrauka ${i + 1}`} className="w-full aspect-square object-cover rounded-lg border border-border" />
               ))}
             </div>
           </div>

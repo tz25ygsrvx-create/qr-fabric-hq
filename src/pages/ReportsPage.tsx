@@ -1,5 +1,6 @@
 import MobileLayout from '@/components/MobileLayout';
-import { mockMovements, getRollById, getSKUByCode } from '@/data/mockData';
+import { getSKUByCode } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const typeLabels: Record<string, string> = {
   ADD_ROLL: 'Pridėtas rulonas',
@@ -14,7 +15,8 @@ const typeLabels: Record<string, string> = {
 };
 
 const ReportsPage = () => {
-  const sorted = [...mockMovements].sort((a, b) => b.datetime.localeCompare(a.datetime));
+  const warehouse = useWarehouseStore();
+  const sorted = [...warehouse.movements].sort((a, b) => b.datetime.localeCompare(a.datetime));
 
   return (
     <MobileLayout title="Judėjimų žurnalas">

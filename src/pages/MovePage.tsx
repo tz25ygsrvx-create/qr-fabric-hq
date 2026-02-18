@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
-import { getRollById, getSKUByCode, getLocationById, getLocationLabel, mockLocations } from '@/data/mockData';
+import { getSKUByCode, getLocationById, getLocationLabel, mockLocations } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, ArrowRight } from 'lucide-react';
@@ -12,11 +13,18 @@ const MovePage = () => {
   const [inputRollId, setInputRollId] = useState(searchParams.get('roll') || '');
   const [newLocationId, setNewLocationId] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const warehouse = useWarehouseStore();
 
-  const roll = getRollById(inputRollId);
+  const roll = warehouse.getRollById(inputRollId);
   const sku = roll ? getSKUByCode(roll.sku_code) : null;
   const currentLoc = roll ? getLocationById(roll.location_id) : null;
   const newLoc = getLocationById(newLocationId);
+
+  const handleMove = () => {
+    if (!roll || !newLocationId) return;
+    warehouse.moveRoll(roll.roll_id, newLocationId);
+    setSubmitted(true);
+  };
 
   if (submitted) {
     return (
@@ -66,7 +74,7 @@ const MovePage = () => {
           </select>
         </div>
 
-        <Button onClick={() => setSubmitted(true)} disabled={!roll || !newLocationId} className="w-full h-14 text-lg font-bold">
+        <Button onClick={handleMove} disabled={!roll || !newLocationId} className="w-full h-14 text-lg font-bold">
           Perkelti
         </Button>
       </div>
