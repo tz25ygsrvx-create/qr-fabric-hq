@@ -34,7 +34,7 @@ const Dashboard = () => {
           { label: 'Aktyvūs rulonai', value: activeRolls, color: 'text-[hsl(var(--success))]' },
           { label: 'Rezervuoti', value: reservedRolls, color: 'text-primary' },
           { label: 'Viso metrų', value: `${totalMeters.toFixed(0)} m`, color: 'text-foreground' },
-          { label: 'SKU tipai', value: skuCount, color: 'text-[hsl(var(--info))]' },
+          { label: 'Audinių rūšys', value: skuCount, color: 'text-[hsl(var(--info))]' },
         ].map(stat => (
           <div key={stat.label} className="bg-card rounded-xl p-3 border border-border">
             <p className="text-xs text-muted-foreground">{stat.label}</p>
