@@ -69,7 +69,7 @@ const AddRollPage = () => {
         </div>
 
         <div>
-          <label className="text-sm text-muted-foreground mb-1.5 block">SKU *</label>
+          <label className="text-sm text-muted-foreground mb-1.5 block">Audinys *</label>
           <select
             value={skuCode}
             onChange={e => setSkuCode(e.target.value)}

@@ -98,11 +98,11 @@ const IssuePage = () => {
               </div>
               <div className="flex gap-4 pt-2 border-t border-border text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground">Viso rulonų (SKU)</p>
+                  <p className="text-xs text-muted-foreground">Viso rulonų (audinio)</p>
                   <p className="font-mono font-bold text-lg">{skuRolls.length}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Viso metrų (SKU)</p>
+                  <p className="text-xs text-muted-foreground">Viso metrų (audinio)</p>
                   <p className="font-mono font-bold text-lg">{skuTotalMeters.toFixed(2)} <span className="text-xs text-muted-foreground">m</span></p>
                 </div>
               </div>

@@ -12,7 +12,7 @@ interface MobileLayoutProps {
 const navItems = [
   { path: '/', icon: Home, label: 'Pradžia' },
   { path: '/scan', icon: ScanLine, label: 'Scan' },
-  { path: '/sku', icon: Package, label: 'SKU' },
+  { path: '/sku', icon: Package, label: 'Audiniai' },
   { path: '/reports', icon: BarChart3, label: 'Ataskaitos' },
 ];
 
