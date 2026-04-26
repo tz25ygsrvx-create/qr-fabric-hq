@@ -75,7 +75,7 @@ const RollsListPage = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
-            placeholder="Ieškoti pagal pavadinimą, SKU, spalvą..."
+            placeholder="Ieškoti pagal pavadinimą, kodą, spalvą..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="pl-10 h-12"

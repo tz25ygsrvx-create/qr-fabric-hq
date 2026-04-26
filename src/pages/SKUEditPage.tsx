@@ -40,15 +40,15 @@ const SKUEditPage = () => {
 
   if (!isNew && !existing) {
     return (
-      <MobileLayout title="SKU nerastas" showBack>
-        <div className="flex items-center justify-center h-64 text-muted-foreground">SKU „{skuCode}" nerastas</div>
+      <MobileLayout title="Audinys nerastas" showBack>
+        <div className="flex items-center justify-center h-64 text-muted-foreground">Audinys „{skuCode}" nerastas</div>
       </MobileLayout>
     );
   }
 
   const handleSave = () => {
     if (!form.sku_code.trim() || !form.name.trim()) {
-      toast({ title: 'Klaida', description: 'SKU kodas ir pavadinimas privalomi', variant: 'destructive' });
+      toast({ title: 'Klaida', description: 'Audinio kodas ir pavadinimas privalomi', variant: 'destructive' });
       return;
     }
 
@@ -65,10 +65,10 @@ const SKUEditPage = () => {
     if (isNew) {
       const ok = store.addSKU(skuData);
       if (!ok) {
-        toast({ title: 'Klaida', description: `SKU kodas „${skuData.sku_code}" jau egzistuoja`, variant: 'destructive' });
+        toast({ title: 'Klaida', description: `Audinio kodas „${skuData.sku_code}" jau egzistuoja`, variant: 'destructive' });
         return;
       }
-      toast({ title: 'SKU sukurtas', description: skuData.name });
+      toast({ title: 'Audinys sukurtas', description: skuData.name });
       navigate(`/sku/${skuData.sku_code}`);
     } else {
       store.updateSKU(skuCode!, {
@@ -79,7 +79,7 @@ const SKUEditPage = () => {
         collection: skuData.collection,
         notes: skuData.notes,
       });
-      toast({ title: 'SKU atnaujintas', description: skuData.name });
+      toast({ title: 'Audinys atnaujintas', description: skuData.name });
       navigate(`/sku/${skuCode}`);
     }
   };
@@ -87,11 +87,11 @@ const SKUEditPage = () => {
   const set = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }));
 
   return (
-    <MobileLayout title={isNew ? 'Naujas SKU' : 'Redaguoti SKU'} showBack>
+    <MobileLayout title={isNew ? 'Naujas audinys' : 'Redaguoti audinį'} showBack>
       <div className="px-4 py-4 space-y-4">
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-muted-foreground font-medium">SKU kodas *</label>
+            <label className="text-xs text-muted-foreground font-medium">Audinio kodas *</label>
             <Input
               value={form.sku_code}
               onChange={e => set('sku_code', e.target.value)}
@@ -146,7 +146,7 @@ const SKUEditPage = () => {
         </div>
 
         <button onClick={handleSave} className="w-full bg-primary text-primary-foreground rounded-xl p-4 font-bold text-lg">
-          {isNew ? '✓ Sukurti SKU' : '✓ Išsaugoti pakeitimus'}
+          {isNew ? '✓ Sukurti audinį' : '✓ Išsaugoti pakeitimus'}
         </button>
       </div>
     </MobileLayout>

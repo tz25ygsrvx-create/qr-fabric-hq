@@ -14,8 +14,8 @@ const SKUDetail = () => {
 
   if (!sku) {
     return (
-      <MobileLayout title="SKU nerastas" showBack>
-        <div className="flex items-center justify-center h-64 text-muted-foreground">SKU „{skuCode}" nerastas</div>
+      <MobileLayout title="Audinys nerastas" showBack>
+        <div className="flex items-center justify-center h-64 text-muted-foreground">Audinys „{skuCode}" nerastas</div>
       </MobileLayout>
     );
   }
@@ -26,12 +26,12 @@ const SKUDetail = () => {
 
   const handleDelete = () => {
     if (rolls.length > 0) {
-      toast({ title: 'Negalima ištrinti', description: `SKU turi ${rolls.length} rulon(ų). Pirmiausia pašalinkite rulonus.`, variant: 'destructive' });
+      toast({ title: 'Negalima ištrinti', description: `Audinys turi ${rolls.length} rulon(ų). Pirmiausia pašalinkite rulonus.`, variant: 'destructive' });
       return;
     }
-    if (confirm('Ar tikrai norite ištrinti šį SKU?')) {
+    if (confirm('Ar tikrai norite ištrinti šį audinį?')) {
       store.deleteSKU(sku.sku_code);
-      toast({ title: 'SKU ištrintas' });
+      toast({ title: 'Audinys ištrintas' });
       navigate('/sku');
     }
   };

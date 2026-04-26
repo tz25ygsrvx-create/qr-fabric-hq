@@ -28,19 +28,19 @@ const SKUList = () => {
   const getTotalMeters = (skuCode: string) => store.rolls.filter(r => r.sku_code === skuCode && r.status !== 'CONSUMED').reduce((s, r) => s + r.meters_remaining, 0);
 
   return (
-    <MobileLayout title="Audiniai (SKU)">
+    <MobileLayout title="Audiniai">
       <div className="px-4 py-4 space-y-4">
         {/* Add + Search */}
         <button
           onClick={() => navigate('/sku/new')}
           className="w-full bg-primary text-primary-foreground rounded-xl p-3 flex items-center justify-center gap-2 font-bold text-lg"
         >
-          <Plus className="w-5 h-5" /> Naujas SKU
+          <Plus className="w-5 h-5" /> Naujas audinys
         </button>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
-            placeholder="Ieškoti pagal pavadinimą ar SKU..."
+            placeholder="Ieškoti pagal pavadinimą ar kodą..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="pl-10 h-12"
