@@ -16,6 +16,7 @@ import MovePage from "./pages/MovePage";
 import RollsListPage from "./pages/RollsListPage";
 import LocationsPage from "./pages/LocationsPage";
 import ReportsPage from "./pages/ReportsPage";
+import FromQuotePage from "./pages/FromQuotePage";
 
 const queryClient = new QueryClient();
 
