@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
-import { ScanLine, Minus, Plus, Search, Package, MapPin, BarChart3 } from 'lucide-react';
-import { mockSKUs } from '@/data/mockData';
+import { ScanLine, Minus, Plus, Search, Package, MapPin, BarChart3, FileText } from 'lucide-react';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const Dashboard = () => {
@@ -11,7 +10,7 @@ const Dashboard = () => {
   const activeRolls = warehouse.rolls.filter(r => r.status === 'ACTIVE').length;
   const reservedRolls = warehouse.rolls.filter(r => r.status === 'RESERVED').length;
   const totalMeters = warehouse.rolls.filter(r => r.status !== 'CONSUMED').reduce((sum, r) => sum + r.meters_remaining, 0);
-  const skuCount = mockSKUs.length;
+  const skuCount = warehouse.skus.length;
 
   const mainActions = [
     { icon: ScanLine, label: 'SCAN ROLL', desc: 'Nuskenuoti QR', path: '/scan', accent: true },
