@@ -248,7 +248,8 @@ class WarehouseStore {
   deleteCategory(name: string) {
     const hasSkus = this.skus.some(s => s.category === name);
     if (hasSkus) return false;
-    this.categories = this.categories.filter(c => c !== name);
+    const i = this.categories.indexOf(name);
+    if (i >= 0) this.categories.splice(i, 1);
     this.notify();
     return true;
   }
