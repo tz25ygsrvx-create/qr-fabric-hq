@@ -207,7 +207,8 @@ class WarehouseStore {
     if (!sku) return false;
     Object.assign(sku, updates);
     this.notify();
-    await supabase.from('fabric_skus').update(updates).eq('sku_code', skuCode);
+    const { height_cm, photos, ...persistable } = updates as any;
+    await supabase.from('fabric_skus').update(persistable).eq('sku_code', skuCode);
     return true;
   }
 
