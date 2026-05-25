@@ -14,7 +14,220 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fabric_movements: {
+        Row: {
+          datetime: string | null
+          from_location_id: string | null
+          id: string
+          note: string | null
+          order_no: string | null
+          qty_meters: number
+          roll_id: string
+          sku_code: string
+          source: string | null
+          to_location_id: string | null
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          datetime?: string | null
+          from_location_id?: string | null
+          id?: string
+          note?: string | null
+          order_no?: string | null
+          qty_meters: number
+          roll_id: string
+          sku_code: string
+          source?: string | null
+          to_location_id?: string | null
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          datetime?: string | null
+          from_location_id?: string | null
+          id?: string
+          note?: string | null
+          order_no?: string | null
+          qty_meters?: number
+          roll_id?: string
+          sku_code?: string
+          source?: string | null
+          to_location_id?: string | null
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      fabric_rolls: {
+        Row: {
+          created_at: string | null
+          doc_no: string | null
+          id: string
+          location_id: string
+          meters_initial: number
+          meters_remaining: number
+          qr_code_value: string
+          received_date: string | null
+          reserved_for_order: string | null
+          roll_id: string
+          sku_code: string | null
+          status: string | null
+          supplier: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          doc_no?: string | null
+          id?: string
+          location_id: string
+          meters_initial: number
+          meters_remaining: number
+          qr_code_value: string
+          received_date?: string | null
+          reserved_for_order?: string | null
+          roll_id: string
+          sku_code?: string | null
+          status?: string | null
+          supplier?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          doc_no?: string | null
+          id?: string
+          location_id?: string
+          meters_initial?: number
+          meters_remaining?: number
+          qr_code_value?: string
+          received_date?: string | null
+          reserved_for_order?: string | null
+          roll_id?: string
+          sku_code?: string | null
+          status?: string | null
+          supplier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fabric_rolls_sku_code_fkey"
+            columns: ["sku_code"]
+            isOneToOne: false
+            referencedRelation: "fabric_skus"
+            referencedColumns: ["sku_code"]
+          },
+        ]
+      }
+      fabric_skus: {
+        Row: {
+          category: string
+          collection: string | null
+          color: string | null
+          created_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          sku_code: string
+          width_cm: number | null
+        }
+        Insert: {
+          category: string
+          collection?: string | null
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          sku_code: string
+          width_cm?: number | null
+        }
+        Update: {
+          category?: string
+          collection?: string | null
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          sku_code?: string
+          width_cm?: number | null
+        }
+        Relationships: []
+      }
+      quote_items: {
+        Row: {
+          created_at: string | null
+          fabric_name: string
+          height_m: number
+          id: string
+          notes: string | null
+          pleating_factor: number
+          qty: number
+          quote_id: string | null
+          quote_number: string
+          width_m: number
+        }
+        Insert: {
+          created_at?: string | null
+          fabric_name: string
+          height_m?: number
+          id?: string
+          notes?: string | null
+          pleating_factor?: number
+          qty?: number
+          quote_id?: string | null
+          quote_number: string
+          width_m?: number
+        }
+        Update: {
+          created_at?: string | null
+          fabric_name?: string
+          height_m?: number
+          id?: string
+          notes?: string | null
+          pleating_factor?: number
+          qty?: number
+          quote_id?: string | null
+          quote_number?: string
+          width_m?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          client_name: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          quote_date: string | null
+          quote_number: string
+          status: string | null
+        }
+        Insert: {
+          client_name?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          quote_date?: string | null
+          quote_number: string
+          status?: string | null
+        }
+        Update: {
+          client_name?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          quote_date?: string | null
+          quote_number?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
