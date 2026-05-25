@@ -40,6 +40,7 @@ const App = () => (
           <Route path="/rolls" element={<RollsListPage />} />
           <Route path="/locations" element={<LocationsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/from-quote" element={<FromQuotePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
