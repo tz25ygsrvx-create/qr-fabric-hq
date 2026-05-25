@@ -16,6 +16,7 @@ import MovePage from "./pages/MovePage";
 import RollsListPage from "./pages/RollsListPage";
 import LocationsPage from "./pages/LocationsPage";
 import ReportsPage from "./pages/ReportsPage";
+import FromQuotePage from "./pages/FromQuotePage";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/rolls" element={<RollsListPage />} />
           <Route path="/locations" element={<LocationsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/from-quote" element={<FromQuotePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
