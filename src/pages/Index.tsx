@@ -64,6 +64,7 @@ const Dashboard = () => {
       {/* Quick Links */}
       <div className="px-4 mt-4 space-y-2">
         {[
+          { icon: FileText, label: 'Nurašyti iš sąmatos', path: '/from-quote' },
           { icon: MapPin, label: 'Lokacijos', path: '/locations' },
           { icon: Package, label: 'Visi rulonai', path: '/rolls' },
           { icon: BarChart3, label: 'Judėjimų žurnalas', path: '/reports' },
