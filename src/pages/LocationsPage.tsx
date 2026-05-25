@@ -1,9 +1,11 @@
 import MobileLayout from '@/components/MobileLayout';
-import { mockLocations, mockRolls, getLocationLabel } from '@/data/mockData';
+import { mockLocations, getLocationLabel } from '@/data/mockData';
+import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const LocationsPage = () => {
-  const getLocRollCount = (locId: string) => mockRolls.filter(r => r.location_id === locId && r.status !== 'CONSUMED').length;
-  const getLocMeters = (locId: string) => mockRolls.filter(r => r.location_id === locId && r.status !== 'CONSUMED').reduce((s, r) => s + r.meters_remaining, 0);
+  const warehouse = useWarehouseStore();
+  const getLocRollCount = (locId: string) => warehouse.rolls.filter(r => r.location_id === locId && r.status !== 'CONSUMED').length;
+  const getLocMeters = (locId: string) => warehouse.rolls.filter(r => r.location_id === locId && r.status !== 'CONSUMED').reduce((s, r) => s + r.meters_remaining, 0);
 
   // Group by rack
   const racks = [...new Set(mockLocations.map(l => l.rack))].sort();
