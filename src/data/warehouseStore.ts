@@ -46,17 +46,19 @@ class WarehouseStore {
         supabase.from('fabric_movements').select('*').order('datetime', { ascending: false }).limit(500),
       ]);
       if (skusRes.data) {
-        this.skus = skusRes.data.map((s: any) => ({
+        this.skus.length = 0;
+        skusRes.data.forEach((s: any) => this.skus.push({
           sku_code: s.sku_code, name: s.name, category: s.category,
           width_cm: s.width_cm ? Number(s.width_cm) : undefined,
           color: s.color || undefined, collection: s.collection || undefined,
           notes: s.notes || undefined,
         }));
         const extraCats = Array.from(new Set(this.skus.map(s => s.category).filter(c => !this.categories.includes(c))));
-        this.categories = [...this.categories, ...extraCats];
+        this.categories.push(...extraCats);
       }
       if (rollsRes.data) {
-        this.rolls = rollsRes.data.map((r: any) => ({
+        this.rolls.length = 0;
+        rollsRes.data.forEach((r: any) => this.rolls.push({
           roll_id: r.roll_id, sku_code: r.sku_code, qr_code_value: r.qr_code_value,
           meters_initial: Number(r.meters_initial), meters_remaining: Number(r.meters_remaining),
           location_id: r.location_id, status: r.status,
@@ -66,7 +68,8 @@ class WarehouseStore {
         }));
       }
       if (movsRes.data) {
-        this.movements = movsRes.data.map((m: any) => ({
+        this.movements.length = 0;
+        movsRes.data.forEach((m: any) => this.movements.push({
           id: m.id, type: m.type, datetime: m.datetime, user_id: m.user_id,
           roll_id: m.roll_id, sku_code: m.sku_code, qty_meters: Number(m.qty_meters),
           from_location_id: m.from_location_id || undefined,
