@@ -218,7 +218,8 @@ class WarehouseStore {
   async deleteSKU(skuCode: string) {
     const hasRolls = this.rolls.some(r => r.sku_code === skuCode);
     if (hasRolls) return false;
-    this.skus = this.skus.filter(s => s.sku_code !== skuCode);
+    const idx = this.skus.findIndex(s => s.sku_code === skuCode);
+    if (idx >= 0) this.skus.splice(idx, 1);
     this.notify();
     await supabase.from('fabric_skus').delete().eq('sku_code', skuCode);
     return true;
