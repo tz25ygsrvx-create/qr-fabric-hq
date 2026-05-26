@@ -3,7 +3,7 @@ export type RollStatus = 'ACTIVE' | 'RESERVED' | 'CONSUMED';
 export type MovementType = 'ADD_ROLL' | 'ADD_METERS' | 'ISSUE_METERS' | 'ISSUE_ROLL' | 'MOVE' | 'ADJUST' | 'RETURN' | 'RESERVE' | 'UNRESERVE';
 export type UserRole = 'Admin' | 'Sandėlininkas' | 'Peržiūra';
 
-export type FabricType = 'Dieniniai' | 'Naktiniai';
+export type FabricType = string;
 
 export interface FabricSKU {
   sku_code: string;

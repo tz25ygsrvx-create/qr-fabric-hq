@@ -2,6 +2,7 @@ import { FabricSKU, Roll, StockMovement } from '@/types/warehouse';
 import { supabase } from '@/integrations/supabase/client';
 
 const DEFAULT_CATEGORIES = ['Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
+const DEFAULT_TYPES = ['Dieniniai', 'Naktiniai'];
 
 export interface QuoteItem {
   id: string;
