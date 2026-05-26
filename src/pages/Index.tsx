@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
-import { ScanLine, Minus, Plus, Search, Package, MapPin, BarChart3, FileText } from 'lucide-react';
+import { ScanLine, Minus, Plus, Search, Package, MapPin, BarChart3, FileText, Settings } from 'lucide-react';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 
 const Dashboard = () => {
@@ -68,6 +68,7 @@ const Dashboard = () => {
           { icon: MapPin, label: 'Lokacijos', path: '/locations' },
           { icon: Package, label: 'Visi rulonai', path: '/rolls' },
           { icon: BarChart3, label: 'Judėjimų žurnalas', path: '/reports' },
+          { icon: Settings, label: 'Tipai ir rūšys', path: '/settings' },
         ].map(link => (
           <button
             key={link.label}

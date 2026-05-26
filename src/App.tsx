@@ -17,6 +17,7 @@ import RollsListPage from "./pages/RollsListPage";
 import LocationsPage from "./pages/LocationsPage";
 import ReportsPage from "./pages/ReportsPage";
 import FromQuotePage from "./pages/FromQuotePage";
+import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/locations" element={<LocationsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/from-quote" element={<FromQuotePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
