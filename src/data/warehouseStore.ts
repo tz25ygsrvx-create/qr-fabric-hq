@@ -49,6 +49,7 @@ class WarehouseStore {
         this.skus.length = 0;
         skusRes.data.forEach((s: any) => this.skus.push({
           sku_code: s.sku_code, name: s.name, category: s.category,
+          type: (s.type === 'Naktiniai' ? 'Naktiniai' : 'Dieniniai'),
           width_cm: s.width_cm ? Number(s.width_cm) : undefined,
           color: s.color || undefined, collection: s.collection || undefined,
           notes: s.notes || undefined,
@@ -199,11 +200,12 @@ class WarehouseStore {
     this.skus.push(sku);
     this.notify();
     await supabase.from('fabric_skus').insert({
-      sku_code: sku.sku_code, name: sku.name, category: sku.category,
+      sku_code: sku.sku_code, name: sku.name, category: sku.category, type: sku.type,
       width_cm: sku.width_cm, color: sku.color, collection: sku.collection, notes: sku.notes,
-    });
+    } as any);
     return true;
   }
+
 
   async updateSKU(skuCode: string, updates: Partial<FabricSKU>) {
     const sku = this.getSKUByCode(skuCode);
