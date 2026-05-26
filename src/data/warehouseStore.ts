@@ -49,6 +49,7 @@ class WarehouseStore {
         this.skus.length = 0;
         skusRes.data.forEach((s: any) => this.skus.push({
           sku_code: s.sku_code, name: s.name, category: s.category,
+          type: (s.type === 'Naktiniai' ? 'Naktiniai' : 'Dieniniai'),
           width_cm: s.width_cm ? Number(s.width_cm) : undefined,
           color: s.color || undefined, collection: s.collection || undefined,
           notes: s.notes || undefined,
