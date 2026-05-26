@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import { useWarehouseStore } from '@/hooks/useWarehouseStore';
 import { Input } from '@/components/ui/input';
-import { FabricCategory, FabricSKU } from '@/types/warehouse';
+import { FabricCategory, FabricSKU, FabricType } from '@/types/warehouse';
 import { toast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
 
