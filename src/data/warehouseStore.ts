@@ -200,9 +200,11 @@ class WarehouseStore {
     this.skus.push(sku);
     this.notify();
     await supabase.from('fabric_skus').insert({
-      sku_code: sku.sku_code, name: sku.name, category: sku.category,
+      sku_code: sku.sku_code, name: sku.name, category: sku.category, type: sku.type,
       width_cm: sku.width_cm, color: sku.color, collection: sku.collection, notes: sku.notes,
-    });
+    } as any);
+    return true;
+  }
     return true;
   }
 
