@@ -76,6 +76,7 @@ const SKUEditPage = () => {
     } else {
       store.updateSKU(skuCode!, {
         name: skuData.name,
+        type: skuData.type,
         category: skuData.category,
         width_cm: skuData.width_cm,
         color: skuData.color,
