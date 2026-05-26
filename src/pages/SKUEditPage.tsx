@@ -30,6 +30,7 @@ const SKUEditPage = () => {
       setForm({
         sku_code: existing.sku_code,
         name: existing.name,
+        type: (existing.type || 'Dieniniai') as FabricType,
         category: existing.category,
         width_cm: existing.width_cm?.toString() || '',
         color: existing.color || '',
