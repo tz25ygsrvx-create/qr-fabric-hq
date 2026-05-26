@@ -125,6 +125,7 @@ export type Database = {
           name: string
           notes: string | null
           sku_code: string
+          type: string
           width_cm: number | null
         }
         Insert: {
@@ -136,6 +137,7 @@ export type Database = {
           name: string
           notes?: string | null
           sku_code: string
+          type?: string
           width_cm?: number | null
         }
         Update: {
@@ -147,6 +149,7 @@ export type Database = {
           name?: string
           notes?: string | null
           sku_code?: string
+          type?: string
           width_cm?: number | null
         }
         Relationships: []
