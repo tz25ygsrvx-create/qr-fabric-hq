@@ -109,7 +109,24 @@ const SKUEditPage = () => {
             <Input value={form.name} onChange={e => set('name', e.target.value)} placeholder="pvz. Linas Natūralus" className="h-12" />
           </div>
           <div>
-            <label className="text-xs text-muted-foreground font-medium">Kategorija</label>
+            <label className="text-xs text-muted-foreground font-medium">Tipas *</label>
+            <div className="flex gap-2 mt-1">
+              {(['Dieniniai', 'Naktiniai'] as FabricType[]).map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => set('type', t)}
+                  className={`flex-1 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                    form.type === t ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-muted-foreground'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground font-medium">Rūšis</label>
             <div className="flex gap-2 flex-wrap mt-1">
               {store.getCategories().map(cat => (
                 <button
