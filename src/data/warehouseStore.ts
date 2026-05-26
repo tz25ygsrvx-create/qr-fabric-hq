@@ -205,8 +205,7 @@ class WarehouseStore {
     } as any);
     return true;
   }
-    return true;
-  }
+
 
   async updateSKU(skuCode: string, updates: Partial<FabricSKU>) {
     const sku = this.getSKUByCode(skuCode);
