@@ -21,6 +21,7 @@ class WarehouseStore {
   movements: StockMovement[] = [];
   skus: FabricSKU[] = [];
   categories: string[] = [...DEFAULT_CATEGORIES];
+  types: string[] = [...DEFAULT_TYPES];
   version = 0;
   loaded = false;
   loading = false;
@@ -50,13 +51,15 @@ class WarehouseStore {
         this.skus.length = 0;
         skusRes.data.forEach((s: any) => this.skus.push({
           sku_code: s.sku_code, name: s.name, category: s.category,
-          type: (s.type === 'Naktiniai' ? 'Naktiniai' : 'Dieniniai'),
+          type: s.type || 'Dieniniai',
           width_cm: s.width_cm ? Number(s.width_cm) : undefined,
           color: s.color || undefined, collection: s.collection || undefined,
           notes: s.notes || undefined,
         }));
         const extraCats = Array.from(new Set(this.skus.map(s => s.category).filter(c => !this.categories.includes(c))));
         this.categories.push(...extraCats);
+        const extraTypes = Array.from(new Set(this.skus.map(s => s.type).filter(t => t && !this.types.includes(t))));
+        this.types.push(...extraTypes);
       }
       if (rollsRes.data) {
         this.rolls.length = 0;
