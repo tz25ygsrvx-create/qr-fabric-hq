@@ -2,6 +2,7 @@ import { FabricSKU, Roll, StockMovement } from '@/types/warehouse';
 import { supabase } from '@/integrations/supabase/client';
 
 const DEFAULT_CATEGORIES = ['Dieniniai', 'Naktiniai', 'Blackout', 'Tinkleliai', 'Romanetės', 'Kita'];
+const DEFAULT_TYPES = ['Dieniniai', 'Naktiniai'];
 
 export interface QuoteItem {
   id: string;
@@ -20,6 +21,7 @@ class WarehouseStore {
   movements: StockMovement[] = [];
   skus: FabricSKU[] = [];
   categories: string[] = [...DEFAULT_CATEGORIES];
+  types: string[] = [...DEFAULT_TYPES];
   version = 0;
   loaded = false;
   loading = false;
@@ -49,13 +51,15 @@ class WarehouseStore {
         this.skus.length = 0;
         skusRes.data.forEach((s: any) => this.skus.push({
           sku_code: s.sku_code, name: s.name, category: s.category,
-          type: (s.type === 'Naktiniai' ? 'Naktiniai' : 'Dieniniai'),
+          type: s.type || 'Dieniniai',
           width_cm: s.width_cm ? Number(s.width_cm) : undefined,
           color: s.color || undefined, collection: s.collection || undefined,
           notes: s.notes || undefined,
         }));
         const extraCats = Array.from(new Set(this.skus.map(s => s.category).filter(c => !this.categories.includes(c))));
         this.categories.push(...extraCats);
+        const extraTypes = Array.from(new Set(this.skus.map(s => s.type).filter(t => t && !this.types.includes(t))));
+        this.types.push(...extraTypes);
       }
       if (rollsRes.data) {
         this.rolls.length = 0;
@@ -90,6 +94,36 @@ class WarehouseStore {
   getSKUs() { return this.skus; }
   getSKUByCode(code: string) { return this.skus.find(s => s.sku_code === code); }
   getCategories() { return this.categories; }
+  getTypes() { return this.types; }
+
+  addType(name: string) {
+    const t = name.trim();
+    if (!t || this.types.includes(t)) return false;
+    this.types.push(t);
+    this.notify();
+    return true;
+  }
+
+  renameType(oldName: string, newName: string) {
+    const t = newName.trim();
+    if (!t || this.types.includes(t)) return false;
+    const idx = this.types.indexOf(oldName);
+    if (idx === -1) return false;
+    this.types[idx] = t;
+    this.skus.filter(s => s.type === oldName).forEach(s => { s.type = t; });
+    this.notify();
+    supabase.from('fabric_skus').update({ type: t }).eq('type', oldName);
+    return true;
+  }
+
+  deleteType(name: string) {
+    const hasSkus = this.skus.some(s => s.type === name);
+    if (hasSkus) return false;
+    const i = this.types.indexOf(name);
+    if (i >= 0) this.types.splice(i, 1);
+    this.notify();
+    return true;
+  }
 
   private async persistRoll(rollId: string, updates: Partial<Roll>) {
     const payload: any = { ...updates };

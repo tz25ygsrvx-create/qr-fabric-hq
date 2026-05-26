@@ -110,13 +110,13 @@ const SKUEditPage = () => {
           </div>
           <div>
             <label className="text-xs text-muted-foreground font-medium">Tipas *</label>
-            <div className="flex gap-2 mt-1">
-              {(['Dieniniai', 'Naktiniai'] as FabricType[]).map(t => (
+            <div className="flex gap-2 flex-wrap mt-1">
+              {store.getTypes().map(t => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => set('type', t)}
-                  className={`flex-1 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                  className={`px-3 py-2 rounded-xl text-sm font-bold transition-colors ${
                     form.type === t ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-muted-foreground'
                   }`}
                 >
