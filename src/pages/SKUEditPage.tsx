@@ -17,6 +17,7 @@ const SKUEditPage = () => {
   const [form, setForm] = useState({
     sku_code: '',
     name: '',
+    type: 'Dieniniai' as FabricType,
     category: 'Dieniniai' as FabricCategory,
     width_cm: '',
     color: '',
