@@ -57,6 +57,7 @@ const SKUEditPage = () => {
     const skuData: FabricSKU = {
       sku_code: form.sku_code.trim(),
       name: form.name.trim(),
+      type: form.type,
       category: form.category,
       width_cm: form.width_cm ? Number(form.width_cm) : undefined,
       color: form.color || undefined,
