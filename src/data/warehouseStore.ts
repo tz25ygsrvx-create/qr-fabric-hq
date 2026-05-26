@@ -94,6 +94,36 @@ class WarehouseStore {
   getSKUs() { return this.skus; }
   getSKUByCode(code: string) { return this.skus.find(s => s.sku_code === code); }
   getCategories() { return this.categories; }
+  getTypes() { return this.types; }
+
+  addType(name: string) {
+    const t = name.trim();
+    if (!t || this.types.includes(t)) return false;
+    this.types.push(t);
+    this.notify();
+    return true;
+  }
+
+  renameType(oldName: string, newName: string) {
+    const t = newName.trim();
+    if (!t || this.types.includes(t)) return false;
+    const idx = this.types.indexOf(oldName);
+    if (idx === -1) return false;
+    this.types[idx] = t;
+    this.skus.filter(s => s.type === oldName).forEach(s => { s.type = t; });
+    this.notify();
+    supabase.from('fabric_skus').update({ type: t }).eq('type', oldName);
+    return true;
+  }
+
+  deleteType(name: string) {
+    const hasSkus = this.skus.some(s => s.type === name);
+    if (hasSkus) return false;
+    const i = this.types.indexOf(name);
+    if (i >= 0) this.types.splice(i, 1);
+    this.notify();
+    return true;
+  }
 
   private async persistRoll(rollId: string, updates: Partial<Roll>) {
     const payload: any = { ...updates };
